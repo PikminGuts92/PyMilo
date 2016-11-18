@@ -40,9 +40,6 @@ class AwesomeReader():
     
     def readBytes(self, length):
         return self.__stream.read(length)
-    
-    def readHalf(self):
-        return 0.0
 
     # Reads single precision floating-point (32-bit)
     def readSingle(self):
@@ -68,17 +65,6 @@ class AwesomeReader():
     def readUInt16(self):
         return struct.unpack(self.__endianChar + "H", self.__stream.read(2))[0]
     
-    # Reads 24-bit integer
-    def readInt24(self):
-        data = self.readBytes(3)
-        
-        if self.getBigEndian():
-            data.reverse()
-        
-        return (data[0] << 0 | data[1] << 8 | data[2] << 16)
-
-    # Reads 24-bit unsigned integer
-
     # Reads 32-bit integer
     def readInt32(self):
         return struct.unpack(self.__endianChar + "i", self.__stream.read(4))[0]
@@ -97,13 +83,24 @@ class AwesomeReader():
     
     # Reads null-termined string
     def readNullString(self):
-        return ""
-    
-    # Reads string with 32-bit length preceding
-    def readString(self):
-        return ""
+        s = []
 
+        while(True):
+            ch = self.readUInt8()
+
+            if ch != 0:
+                s.append(ch)
+            else:
+                break
+
+        return bytes(s).decode("utf-8")
+    
     # Reads string with given length
-    def readString(self, length):
-        return ""
+    def readString(self, length = 0):
+        if length == 0:
+            length = self.readUInt32()
+
+        data = self.readBytes(length)
+
+        return bytes(data).decode("utf-8")
     
