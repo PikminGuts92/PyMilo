@@ -6,6 +6,7 @@ from MiloContainer import MiloContainer
 '''
 def main(argv):
     if len(argv) < 3:
+        print("Args: miloPath outputMiloPath")
         return
     
     milo = MiloContainer(argv[1])
