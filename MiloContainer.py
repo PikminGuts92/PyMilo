@@ -1,6 +1,7 @@
 import struct
 import zlib
 import gzip
+import os
 from AwesomeReader import *
 
 class CompressionType:
@@ -149,8 +150,15 @@ class MiloContainer:
 
     def writeRawBytesToFile(self, outPath):
         try:
+            # Creates directory if it doesn't exist
+            outDir = os.path.split(outPath)[0]
+            if not os.path.exists(outDir):
+                os.makedirs(outDir)
+
             # Writes bytes to file
             with open(outPath, "wb") as out:
                 out.write(self.rawBytes)
+            
+            return True
         except:
-            return
+            return False
